@@ -1,0 +1,9 @@
+{
+  "additionalFiles": "../../..,../..,../..",
+  "compiler.optimization_flags": "-Os",
+  "customBuildProperties": "",
+  "fqbn": "esp32:esp32:esp32",
+  "hardwareFolders": "/mnt/DATA/SPLAB/.arduino15/packages/esp32/hardware/esp32/3.3.10,/mnt/DATA/SPLAB/.arduino15/packages/esp32/hardware/esp32/3.3.10",
+  "otherLibrariesFolders": "/mnt/DATA/SPLAB/Arduino/libraries",
+  "sketchLocation": "/mnt/DATA/SPLAB/tinymlhar"
+}
