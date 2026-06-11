@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+UCI_HAR_Dataset/
+*.npy
+*.keras
+build/
