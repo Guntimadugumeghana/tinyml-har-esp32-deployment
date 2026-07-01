@@ -1,4 +1,4 @@
 [wokwi]
 version = 1
-firmware = "build/tinymlhar.ino.bin"
+firmware = "build/tinymlhar.ino.merged.bin"
 elf = "build/tinymlhar.ino.elf"

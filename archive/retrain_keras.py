@@ -65,12 +65,12 @@ def load_X(split):
     # Stack → (N, 128, 9)
     return np.stack(signals, axis=-1).astype(np.float32)
 
-# ── Load y labels ─────────────────────────────────────────────────────────────
+# Load y labels 
 def load_y(split):
     path = os.path.join(DATASET_DIR, split, f"y_{split}.txt")
     return np.loadtxt(path, dtype=np.int32) - 1  # 0-based
 
-# ── Build Keras model ─────────────────────────────────────────────────────────
+#  Build Keras model
 def build_model():
     model = keras.Sequential([
         keras.Input(shape=(N_STEPS, N_FEATURES), name="accel_input"),

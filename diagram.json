@@ -4,22 +4,26 @@
   "editor": "wokwi",
   "parts": [
     {
-      "type": "board-esp32-devkit-v1",
+      "type": "board-esp32-devkit-c-v4",
       "id": "esp32",
       "top": 0,
       "left": 0,
       "attrs": {}
     },
     {
-      "type": "wokwi-serial-monitor",
-      "id": "serial",
-      "top": 200,
-      "left": 600,
+      "type": "wokwi-mpu6050",
+      "id": "mpu",
+      "top": 100,
+      "left": 300,
       "attrs": {}
     }
   ],
   "connections": [
-    [ "esp32:TX0", "serial:RX", "", [] ],
-    [ "esp32:GND.1", "serial:GND", "", [] ]
+    [ "esp32:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp32:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp32:21", "mpu:SDA", "green", [] ],
+    [ "esp32:22", "mpu:SCL", "yellow", [] ],
+    [ "esp32:3V3", "mpu:VCC", "red", [] ],
+    [ "esp32:GND.1", "mpu:GND", "black", [] ]
   ]
 }

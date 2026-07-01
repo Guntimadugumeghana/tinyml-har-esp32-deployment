@@ -1,6 +1,5 @@
 """
 Step 2: Convert HAR model → TensorFlow Lite
-=============================================
 Produces two .tflite files
   har_float32.tflite   — no quantization (baseline)
   har_int8.tflite      — full integer quantization (MCU-ready)
