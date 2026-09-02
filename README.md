@@ -17,8 +17,6 @@ RuntimeError: Select TensorFlow op(s), included in the given model, is(are) not
 supported by this interpreter... Node number 1 (FlexTensorListReserve) failed to prepare.
 ```
 
-Using `unroll=True` removes the Flex op but introduces a different blocker: a `FILL` kernel failure (`Non-constant dims tensor not supported`), which is a TFLite Micro kernel limitation, not a configuration issue.
-
 The fix was switching to a 1D-CNN. Conv1D/MaxPool1D/GlobalAveragePooling1D lower to `CONV_2D`, `MAX_POOL_2D`, `MEAN`, `FULLY_CONNECTED`, `SOFTMAX`, `RESHAPE`, `EXPAND_DIMS` - all standard TFLite Micro ops, zero Flex/Select ops required. This is also the standard industry approach for bare-metal HAR; LSTMs are well known to be a poor fit for microcontroller deployment for exactly this reason.
 
 The CNN ended up smaller and more accurate than the largest LSTM tried.
