@@ -4,7 +4,7 @@ End-to-end deployment of a quantized 1D-CNN model for real-time Human Activity R
 
 ## Overview
 
-This project demonstrates the full TinyML pipeline — training, quantization, and embedded deployment — on the UCI HAR dataset, targeting a simulated ESP32 (Wokwi) with TFLite Micro.
+This project demonstrates the full TinyML pipeline — training, quantization, and embedded deployment - on the UCI HAR dataset, targeting a simulated ESP32 (Wokwi) with TFLite Micro.
 
 The original architecture was an LSTM. It was replaced with a 1D-CNN after the LSTM proved fundamentally incompatible with TFLite Micro on bare-metal hardware. That pivot, why it was necessary, and what it cost/gained, is documented below rather than glossed over.
 
