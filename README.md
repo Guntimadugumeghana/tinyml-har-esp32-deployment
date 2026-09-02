@@ -19,7 +19,7 @@ supported by this interpreter... Node number 1 (FlexTensorListReserve) failed to
 
 Using `unroll=True` removes the Flex op but introduces a different blocker: a `FILL` kernel failure (`Non-constant dims tensor not supported`), which is a TFLite Micro kernel limitation, not a configuration issue.
 
-The fix was switching to a 1D-CNN. Conv1D/MaxPool1D/GlobalAveragePooling1D lower to `CONV_2D`, `MAX_POOL_2D`, `MEAN`, `FULLY_CONNECTED`, `SOFTMAX`, `RESHAPE`, `EXPAND_DIMS` — all standard TFLite Micro ops, zero Flex/Select ops required. This is also the standard industry approach for bare-metal HAR; LSTMs are well known to be a poor fit for microcontroller deployment for exactly this reason.
+The fix was switching to a 1D-CNN. Conv1D/MaxPool1D/GlobalAveragePooling1D lower to `CONV_2D`, `MAX_POOL_2D`, `MEAN`, `FULLY_CONNECTED`, `SOFTMAX`, `RESHAPE`, `EXPAND_DIMS` - all standard TFLite Micro ops, zero Flex/Select ops required. This is also the standard industry approach for bare-metal HAR; LSTMs are well known to be a poor fit for microcontroller deployment for exactly this reason.
 
 The CNN ended up smaller and more accurate than the largest LSTM tried.
 
@@ -120,10 +120,10 @@ UCI HAR Dataset
       │  91.48%, ~0% drop from float32
       ▼
 4. Generate C header                        [generate_model_header.py]
-      │  har_model_data.h — int8 byte array, 20,400 bytes
+      │  har_model_data.h - int8 byte array, 20,400 bytes
       ▼
 5. Generate on-device test fixtures         [generate_fixtures.py]
-      │  har_fixtures.h — one real test sample per class
+      │  har_fixtures.h - one real test sample per class
       ▼
 6. Deploy on ESP32 (Arduino C++ / TFLite Micro)   [tinymlhar.ino]
       │  arduino-cli compile, wokwi-cli simulate
@@ -145,7 +145,7 @@ tinyml-har-esp32-deployment/
 ├── har_fixtures.h               # Auto-generated test fixtures (real samples)
 ├── diagram.json                 # Wokwi ESP32 board config
 ├── wokwi.toml                   # Wokwi simulator config
-├── archive/                     # Earlier LSTM attempt — kept for the pivot story
+├── archive/                     # Earlier LSTM attempt - kept for the pivot story
 │   ├── 1_retrain_keras.py
 │   ├── 2_convert_to_tflite.py
 │   ├── 3_validate_tflite.py
@@ -162,30 +162,30 @@ Requirements:
 pip install tensorflow scikit-learn numpy
 ```
 
-Step 1 — Train the CNN:
+Step 1 - Train the CNN:
 ```bash
 CUDA_VISIBLE_DEVICES=-1 python3 train_cnn.py
 ```
 Note: training is not bit-reproducible run to run (see accuracy variance note above). Expect 89–93%.
 
-Step 2 — Convert to INT8:
+Step 2 - Convert to INT8:
 ```bash
 CUDA_VISIBLE_DEVICES=-1 python3 convert_cnn_to_int8.py
 ```
-`CUDA_VISIBLE_DEVICES=-1` forces CPU mode — without it, TensorFlow may use a GPU op incompatible with TFLite conversion.
+`CUDA_VISIBLE_DEVICES=-1` forces CPU mode - without it, TensorFlow may use a GPU op incompatible with TFLite conversion.
 
-Step 3 — Validate INT8 accuracy:
+Step 3 - Validate INT8 accuracy:
 ```bash
 python3 check_int8_accuracy.py
 ```
 
-Step 4 — Generate the model header and fixtures:
+Step 4 - Generate the model header and fixtures:
 ```bash
 python3 generate_model_header.py
 python3 generate_fixtures.py
 ```
 
-Step 5 — Compile and simulate:
+Step 5 - Compile and simulate:
 ```bash
 arduino-cli compile --fqbn esp32:esp32:esp32 --build-path ./build --clean .
 wokwi-cli --serial-log-file serial.log .
@@ -198,7 +198,7 @@ TensorFlow · TensorFlow Lite · Keras · TFLite Micro · ESP32 · Arduino C++ �
 
 ## Dataset
 
-UCI Human Activity Recognition Using Smartphones — 30 subjects, Samsung Galaxy S2, 50 Hz sampling rate, 128-sample sliding windows, 9 raw inertial signal channels, 6 activity classes.
+UCI Human Activity Recognition Using Smartphones - 30 subjects, Samsung Galaxy S2, 50 Hz sampling rate, 128-sample sliding windows, 9 raw inertial signal channels, 6 activity classes.
 
 ## Author
 
