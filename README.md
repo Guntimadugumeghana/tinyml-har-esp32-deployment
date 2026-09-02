@@ -4,13 +4,13 @@ End-to-end deployment of a quantized 1D-CNN model for real-time Human Activity R
 
 ## Overview
 
-This project demonstrates the full TinyML pipeline — training, quantization, and embedded deployment - on the UCI HAR dataset, targeting a simulated ESP32 (Wokwi) with TFLite Micro.
+This project demonstrates the full TinyML pipeline - training, quantization, and embedded deployment - on the UCI HAR dataset, targeting a simulated ESP32 (Wokwi) with TFLite Micro.
 
 The original architecture was an LSTM. It was replaced with a 1D-CNN after the LSTM proved fundamentally incompatible with TFLite Micro on bare-metal hardware. That pivot, why it was necessary, and what it cost/gained, is documented below rather than glossed over.
 
 ## Why the architecture changed: LSTM → 1D-CNN
 
-A standard Keras LSTM was trained first (16/32/64-unit variants, 83.5–88.7% accuracy). All of them convert to TFLite using a `FlexTensorListReserve` op — part of TensorFlow's Select/Flex op set. TFLite Micro, which is what actually runs on bare-metal ESP32, does not implement Flex ops. There is no workaround inside the LSTM architecture itself: a plain `tf.lite.Interpreter` on this machine fails immediately on `AllocateTensors()` with:
+A standard Keras LSTM was trained first (16/32/64-unit variants, 83.5–88.7% accuracy). All of them convert to TFLite using a `FlexTensorListReserve` op - part of TensorFlow's Select/Flex op set. TFLite Micro, which is what actually runs on bare-metal ESP32, does not implement Flex ops. There is no workaround inside the LSTM architecture itself: a plain `tf.lite.Interpreter` on this machine fails immediately on `AllocateTensors()` with:
 
 ```
 RuntimeError: Select TensorFlow op(s), included in the given model, is(are) not
@@ -28,7 +28,7 @@ The CNN ended up smaller and more accurate than the largest LSTM tried.
 | Metric | LSTM (32-unit) | 1D-CNN (this project) |
 |---|---|---|
 | Float32 accuracy | 88.73% | 91.3% ± 1.1% (range 89.6–92.7%, 5 runs) |
-| INT8 accuracy | 88.73% (dynamic-range only — see note) | 91.48% |
+| INT8 accuracy | 88.73% (dynamic-range only - see note) | 91.48% |
 | Accuracy drop from INT8 | 0.00% | ~0% (within run-to-run noise) |
 | Parameters | 13,894 | 9,926 |
 | Float32 TFLite size | 73.0 KB | 45 KB |
@@ -37,9 +37,9 @@ The CNN ended up smaller and more accurate than the largest LSTM tried.
 | Tensor arena used | N/A (never ran on-device) | 6.93 KB |
 | Wokwi inference latency | N/A | ~592 ms |
 
-**Note on accuracy variance:** training the CNN is not bit-reproducible across runs even with a fixed random seed — TensorFlow's oneDNN backend reorders floating-point operations differently depending on CPU instruction set, which changes early gradients and compounds over training. Five identical training runs on the same machine produced 89.62%, 92.67%, 91.21%, 91.55%, 91.45% (mean 91.3%, stdev 1.1%). The model used for INT8 conversion and deployment below is the 91.45% run.
+**Note on accuracy variance:** training the CNN is not bit-reproducible across runs even with a fixed random seed - TensorFlow's oneDNN backend reorders floating-point operations differently depending on CPU instruction set, which changes early gradients and compounds over training. Five identical training runs on the same machine produced 89.62%, 92.67%, 91.21%, 91.55%, 91.45% (mean 91.3%, stdev 1.1%). The model used for INT8 conversion and deployment below is the 91.45% run.
 
-**Note on LSTM INT8 row:** the LSTM's "INT8" model uses dynamic-range quantization (weights int8, activations float at runtime) because full INT8 calibration isn't possible with the Flex ops present. It was also never deployed to TFLite Micro — the comparison row is float32-vs-quantized-on-desktop only. It never ran on the ESP32 simulation at all, because it can't.
+**Note on LSTM INT8 row:** the LSTM's "INT8" model uses dynamic-range quantization (weights int8, activations float at runtime) because full INT8 calibration isn't possible with the Flex ops present. It was also never deployed to TFLite Micro - the comparison row is float32-vs-quantized-on-desktop only. It never ran on the ESP32 simulation at all, because it can't.
 
 ### Per-class accuracy (1D-CNN, INT8, on-device representative run)
 
@@ -52,7 +52,7 @@ The CNN ended up smaller and more accurate than the largest LSTM tried.
 | STANDING | 81.6% |
 | LAYING | 95.0% |
 
-SITTING and STANDING are the most-confused pair, consistent with the underlying IMU signal — these two postures look nearly identical to an accelerometer/gyroscope. This shows up directly in the live Wokwi run below (one SITTING fixture predicted as STANDING at 81.2% confidence).
+SITTING and STANDING are the most-confused pair, consistent with the underlying IMU signal - these two postures look nearly identical to an accelerometer/gyroscope. This shows up directly in the live Wokwi run below (one SITTING fixture predicted as STANDING at 81.2% confidence).
 
 ## Model architecture
 
@@ -70,7 +70,7 @@ Input: (128 timesteps, 9 features)
 Total trainable parameters: 9,926
 ```
 
-GlobalAveragePooling1D is used instead of Flatten+Dense specifically to keep the parameter count down — Flatten would have added roughly 130K parameters to the first dense layer for negligible accuracy gain.
+GlobalAveragePooling1D is used instead of Flatten+Dense specifically to keep the parameter count down - Flatten would have added roughly 130K parameters to the first dense layer for negligible accuracy gain.
 
 9 sensor channels: `body_acc_x/y/z`, `body_gyro_x/y/z`, `total_acc_x/y/z`
 6 output classes: `WALKING`, `WALKING_UPSTAIRS`, `WALKING_DOWNSTAIRS`, `SITTING`, `STANDING`, `LAYING`
@@ -93,7 +93,7 @@ True: LAYING                | Predicted: LAYING                (99.6%)  Latency:
 
 5 of 6 fixtures predicted correctly. The SITTING misclassification is the same confusion seen in the held-out test set, not a deployment bug.
 
-**Important scope note:** this is a Wokwi simulation, not a physical ESP32. There is no real MPU-6050 sensor — inference runs on fixed test-set samples (`har_fixtures.h`) cycled in a loop, not live sensor data. The MPU-6050 I2C driver code in `tinymlhar.ino` is present and wired in `diagram.json` but currently unused by `loop()`.
+**Important scope note:** this is a Wokwi simulation, not a physical ESP32. There is no real MPU-6050 sensor - inference runs on fixed test-set samples (`har_fixtures.h`) cycled in a loop, not live sensor data. The MPU-6050 I2C driver code in `tinymlhar.ino` is present and wired in `diagram.json` but currently unused by `loop()`.
 
 ## ESP32 resource usage
 
